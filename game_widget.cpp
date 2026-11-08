@@ -71,7 +71,9 @@ void game_widget::keyPressEvent(QKeyEvent *event)
 void game_widget::mousePressEvent(QMouseEvent *event)
 {
 #ifdef Q_OS_WASM
-  focus_browser_window();
+  // Wait until the browser has finished handling the click,
+  // as that moves the focus to the page body
+  QTimer::singleShot(50, this, focus_browser_window);
 #endif
   QWidget::mousePressEvent(event);
 }
