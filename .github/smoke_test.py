@@ -17,20 +17,11 @@ with sync_playwright() as p:
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.on("console", lambda m: print("console:", m.text))
-    page.on("response", lambda r: r.status >= 400 and print("HTTP", r.status, r.url))
     page.goto(URL)
     time.sleep(10)
     # Give the game keyboard focus, then move the paddle
     page.mouse.click(300, 50)
     before = page.screenshot()
-    print("DOM:", page.evaluate("""() => [...document.querySelectorAll('*')].map(e =>
-        e.tagName + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.replace(/ /g, '.') : '')
-        + (e.hasAttribute('tabindex') ? '[tabindex=' + e.getAttribute('tabindex') + ']' : '')
-        + (e.shadowRoot ? '{shadow:' + [...e.shadowRoot.querySelectorAll('*')].map(c => c.tagName + (c.className && typeof c.className === 'string' ? '.' + c.className.replace(/ /g, '.') : '') + (c.hasAttribute('tabindex') ? '[tabindex=' + c.getAttribute('tabindex') + ']' : '')).join(',') + '}' : '')
-        ).join(' ')"""))
-    page.on("requestfailed", lambda r: print("failed:", r.url))
-    print("Focused element:", page.evaluate(
-        "() => document.activeElement && document.activeElement.outerHTML.slice(0, 200)"))
     page.keyboard.press("ArrowRight")
     time.sleep(0.2)
     page.keyboard.press("ArrowLeft")

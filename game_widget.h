@@ -14,6 +14,7 @@ public:
 
 protected:
   void keyPressEvent(QKeyEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
 
 private:

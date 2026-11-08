@@ -2,7 +2,24 @@
 
 #include <QKeyEvent>
 #include <QPainter>
-#include <QDebug>
+
+#ifdef Q_OS_WASM
+#include <emscripten/val.h>
+
+/// In the browser, Qt only receives key presses if its window element
+/// has the browser's keyboard focus, which clicking the canvas does not give
+void focus_browser_window()
+{
+  using emscripten::val;
+  const val container = val::global("document").call<val>(
+    "getElementById", std::string("qt-shadow-container"));
+  if (container.isNull() || container["shadowRoot"].isNull()) return;
+  const val helper = container["shadowRoot"].call<val>(
+    "querySelector", std::string(".qt-window-focus-helper"));
+  if (helper.isNull()) return;
+  helper.call<void>("focus");
+}
+#endif
 
 game_widget::game_widget(QWidget *parent)
   : QWidget(parent),
@@ -42,7 +59,6 @@ void game_widget::tick()
 
 void game_widget::keyPressEvent(QKeyEvent *event)
 {
-  qDebug() << "DEBUG keyPressEvent" << event->key();
   if (event->key() == Qt::Key_Left) {
     m_player_x = m_player_sz;
   } else if (event->key() == Qt::Key_Right) {
@@ -50,6 +66,14 @@ void game_widget::keyPressEvent(QKeyEvent *event)
   } else {
     QWidget::keyPressEvent(event);
   }
+}
+
+void game_widget::mousePressEvent(QMouseEvent *event)
+{
+#ifdef Q_OS_WASM
+  focus_browser_window();
+#endif
+  QWidget::mousePressEvent(event);
 }
 
 void game_widget::paintEvent(QPaintEvent *)
