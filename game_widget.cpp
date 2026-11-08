@@ -2,6 +2,7 @@
 
 #include <QKeyEvent>
 #include <QPainter>
+#include <QDebug>
 
 game_widget::game_widget(QWidget *parent)
   : QWidget(parent),
@@ -41,6 +42,7 @@ void game_widget::tick()
 
 void game_widget::keyPressEvent(QKeyEvent *event)
 {
+  qDebug() << "DEBUG keyPressEvent" << event->key();
   if (event->key() == Qt::Key_Left) {
     m_player_x = m_player_sz;
   } else if (event->key() == Qt::Key_Right) {

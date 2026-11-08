@@ -16,11 +16,14 @@ with sync_playwright() as p:
     page = browser.new_page(viewport={"width": 600, "height": 100})
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
+    page.on("console", lambda m: print("console:", m.text))
     page.goto(URL)
     time.sleep(10)
     # Give the game keyboard focus, then move the paddle
     page.mouse.click(300, 50)
     before = page.screenshot()
+    print("Focused element:", page.evaluate(
+        "() => document.activeElement && document.activeElement.outerHTML.slice(0, 200)"))
     page.keyboard.press("ArrowRight")
     time.sleep(0.2)
     page.keyboard.press("ArrowLeft")
