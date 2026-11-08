@@ -18,4 +18,5 @@ if [[ "$PWD" =~ scripts$ ]]; then
     exit 42
 fi
 
+cp lonelier_pong.pde docs/game/
 zensical serve
