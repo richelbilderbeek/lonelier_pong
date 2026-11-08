@@ -15,8 +15,8 @@ nav = [
 variant = "classic"
 palette.primary = "black"
 
-favicon = "k3_op_een_rij_icon.png"
-logo = "k3_op_een_rij_icon.png"
+favicon = "icon.png"
+logo = "icon.png"
 
 # https://zensical.org/docs/setup/language/
 language = "en"
