@@ -1,42 +1,12 @@
-"""Check that the WebAssembly game starts in a browser and animates."""
-import base64
+"""Check that the game runs in a browser and that the arrow keys work."""
 import io
 import sys
 import time
 
 from PIL import Image
-
 from playwright.sync_api import sync_playwright
 
 URL = "http://localhost:8000/lonelier_pong.html"
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(channel="chrome")
-    # The same size as the iframe on the website
-    page = browser.new_page(viewport={"width": 600, "height": 100})
-    errors = []
-    page.on("pageerror", lambda e: errors.append(str(e)))
-    page.on("console", lambda m: print("console:", m.text))
-    page.goto(URL)
-    time.sleep(10)
-    # Give the game keyboard focus, then move the paddle
-    page.mouse.click(300, 50)
-    before = page.screenshot()
-    page.keyboard.press("ArrowRight")
-    time.sleep(0.2)
-    page.keyboard.press("ArrowLeft")
-    time.sleep(0.2)
-    after_left = page.screenshot()
-    page.keyboard.press("ArrowRight")
-    time.sleep(0.2)
-    after = page.screenshot()
-    browser.close()
-
-print("Screenshot:", base64.b64encode(after).decode())
-if errors:
-    sys.exit(f"Page errors: {errors}")
-if before == after:
-    sys.exit("The game is not running: the page did not change")
 
 
 def paddle_at_left(png):
@@ -48,8 +18,30 @@ def paddle_at_left(png):
     )
 
 
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    # The same size as the iframe on the website
+    page = browser.new_page(viewport={"width": 600, "height": 100})
+    errors = []
+    page.on("pageerror", lambda e: errors.append(str(e)))
+    page.goto(URL)
+    time.sleep(3)
+    page.mouse.click(300, 50)
+    before = page.screenshot()
+    page.keyboard.press("ArrowLeft")
+    time.sleep(0.2)
+    after_left = page.screenshot()
+    page.keyboard.press("ArrowRight")
+    time.sleep(0.2)
+    after_right = page.screenshot()
+    browser.close()
+
+if errors:
+    sys.exit(f"Page errors: {errors}")
+if before == after_right:
+    sys.exit("The game is not running: the page did not change")
 if not paddle_at_left(after_left):
-    print("Screenshot after Left:", base64.b64encode(after_left).decode())
     sys.exit("Pressing Left did not move the paddle to the left")
-if paddle_at_left(after):
+if paddle_at_left(after_right):
     sys.exit("Pressing Right did not move the paddle to the right")
+print("OK")
