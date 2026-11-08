@@ -6,3 +6,15 @@ application.windows32
 application.windows64
 application.macosx
 processing-*
+.qmake.stash
+Makefile
+Makefile.*
+*.o
+moc_*
+*.pro.user
+release/
+debug/
+build/
+site/
+docs/game/
+lonelier_pong_plugin_import.cpp
