@@ -14,10 +14,10 @@ void focus_browser_window()
   const val container = val::global("document").call<val>(
     "getElementById", std::string("qt-shadow-container"));
   if (container.isNull() || container["shadowRoot"].isNull()) return;
-  const val helper = container["shadowRoot"].call<val>(
-    "querySelector", std::string(".qt-window-focus-helper"));
-  if (helper.isNull()) return;
-  helper.call<void>("focus");
+  const val input = container["shadowRoot"].call<val>(
+    "querySelector", std::string(".qt-window-input-element"));
+  if (input.isNull()) return;
+  input.call<void>("focus");
 }
 #endif
 

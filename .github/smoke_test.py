@@ -22,6 +22,11 @@ with sync_playwright() as p:
     # Give the game keyboard focus, then move the paddle
     page.mouse.click(300, 50)
     before = page.screenshot()
+    print("DEBUG focus:", page.evaluate("""() => {
+        const c = document.getElementById('qt-shadow-container');
+        const a = c && c.shadowRoot && c.shadowRoot.activeElement;
+        return document.activeElement.tagName + ' / ' + (a ? a.tagName + '.' + a.className : 'none');
+    }"""))
     page.keyboard.press("ArrowRight")
     time.sleep(0.2)
     page.keyboard.press("ArrowLeft")
