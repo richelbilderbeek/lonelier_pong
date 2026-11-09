@@ -1,4 +1,4 @@
-# Play Lonelier Pong
+# Play
 
 Click the game, then use the left and right arrow keys.
 
